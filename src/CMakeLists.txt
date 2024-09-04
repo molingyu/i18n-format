@@ -4,23 +4,25 @@ add_custom_target(codeGen
 )
 
 set(SOURCE_FILES
-        core.c
         core.h
-        word2number.h
 )
 
 set(API_FILES
         ../include/i18n-format/base.h
 )
 
-file(GLOB GEN_SOURCES "src/gen/*.c")
+file(GLOB GEN_SOURCES_H "./gen/*.h")
+file(GLOB GEN_SOURCES "./gen/*.c")
+
+file(GLOB LOCALE_H "./locale/**/*.h")
+file(GLOB LOCALE "./locale/**/*.c")
 
 # Hide internal functions
 # https://gcc.gnu.org/wiki/Visibility
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES} ${API_FILES})
+add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES_H} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
 
 add_dependencies(i18n_format codeGen)
 

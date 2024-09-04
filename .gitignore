@@ -15,5 +15,6 @@ CMakeUserPresets.json
 .cache/
 
 # Gen
-src/gen/
+src/gen/*.c
+
 

@@ -12,12 +12,24 @@ gens = [
 
 
 def word2number_gen(include_list):
+    include = ''
+    word2number_table = ''
+    number2word_table = ''
+    word2numberf_table = ''
+    number2wordf_table = ''
+    for path in include_list:
+        include += '#include "./locale/%s/word2number.h"\n' % path
+        word2number_table += f'{{ "{path}", & word2number_{path} }},\n'
+        number2word_table += f'{{ "{path}", & number2word_{path} }},\n'
+        word2numberf_table += f'{{ "{path}", & word2numberf_{path} }},\n'
+        number2wordf_table += f'{{ "{path}", & number2wordf_{path} }},\n'
+
     return {
-        'include': '',
-        'word2number_table': '',
-        'number2word_table': '',
-        'word2numberf_table': '',
-        'number2wordf_table': '',
+        'include': include,
+        'word2number_table': word2number_table,
+        'number2word_table': number2word_table,
+        'word2numberf_table': word2numberf_table,
+        'number2wordf_table': number2wordf_table,
     }
 
 
@@ -27,10 +39,10 @@ def code_gen(template_name):
     if not os.path.exists("./gen/"):
         os.mkdir("./gen")
     f = open("./gen/%s.c" % template_name, "w+")
-    dir_list = os.listdir("../src/locale")
+    dir_list = os.listdir(os.path.abspath("./locale"))
     include_list = []
     for path in dir_list:
-        if os.path.exists(os.path.join(path, template_name)):
+        if os.path.exists(os.path.join("./locale", path, "%s.h" % template_name)):
             include_list.append(path)
 
     f.write(template.render(globals()["%s_gen" % template_name](include_list)))

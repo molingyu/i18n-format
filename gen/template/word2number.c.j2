@@ -166,23 +166,24 @@
 
 #include <string.h>
 #include <errno.h>
-#include "../word2number.h"
+#include "word2number.h"
+#include "../core.h"
 
 {{ include }}
 
-static struct word2number_lang_method_table word2number_table[] = {
+struct word2number_lang_method_table word2number_table[] = {
     {{ word2number_table }}
 };
 
-static struct number2word_lang_method_table number2word_table[] = {
+struct number2word_lang_method_table number2word_table[] = {
     {{ number2word_table }}
 };
 
-static struct word2numberf_lang_method_table word2numberf_table[] = {
+struct word2numberf_lang_method_table word2numberf_table[] = {
     {{ word2numberf_table }}
 };
 
-static struct number2wordf_lang_method_table number2wordf_table[] = {
+struct number2wordf_lang_method_table number2wordf_table[] = {
     {{ number2wordf_table }}
 };
 

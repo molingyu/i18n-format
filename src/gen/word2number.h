@@ -166,7 +166,6 @@
 
 #pragma once
 
-
 struct word2number_lang_method_table
 {
     const char *code;
@@ -199,14 +198,14 @@ extern struct word2numberf_lang_method_table word2numberf_table[];
 
 extern struct number2wordf_lang_method_table number2wordf_table[];
 
-long word2number(char* word, char* input_lang);
+long word2number(char* word, const char* input_lang);
 
-char* number2word(long number, char* output_lang);
+char* number2word(long number, const char* output_lang);
 
-char* word2word(char* word, char* input_lang, char* output_lang);
+char* word2word(char* word, const char* input_lang, const char* output_lang);
 
-double word2numberf(char* word, char* input_lang);
+double word2numberf(char* word, const char* input_lang);
 
-char* number2wordf(double number, char* output_lang);
+char* number2wordf(double number, const char* output_lang);
 
-char* word2wordf(char* word, char* input_lang, char* output_lang);
+char* word2wordf(char* word, const char* input_lang, const char* output_lang);
