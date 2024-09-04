@@ -166,9 +166,13 @@
 
 #include "test_macros.h"
 
-#include "../src/word2number.h"
+#include "gen/word2number.h"
 
 int Word2NumberTest( void ) {
+	const int num = word2number("一", "zh_CN");
+	printf("%d\n", num);
 
+	const char* word = number2word(2, "zh_CN");
+	printf("%s\n", word);
     return 0;
 }
