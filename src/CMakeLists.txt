@@ -56,7 +56,7 @@ if (MSVC)
     if (BUILD_SHARED_LIBS)
         # this is needed by DLL users to import i18n_format symbols
         target_compile_definitions(i18n_format INTERFACE i18n_format_DLL)
-    endif()
+    endif ()
 
     # Enable asserts in release with debug info
     target_compile_definitions(i18n_format PUBLIC "$<$<CONFIG:RELWITHDEBINFO>:B2_ENABLE_ASSERT>")
@@ -78,10 +78,10 @@ elseif (UNIX)
         # raspberry pi
         # -mfpu=neon
         # target_compile_options(i18n_format PRIVATE)
-    else()
+    else ()
         # x64
-    endif()
-endif()
+    endif ()
+endif ()
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" PREFIX "src" FILES ${i18n_format_SOURCE_FILES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/../include" PREFIX "include" FILES ${i18n_format_API_FILES})

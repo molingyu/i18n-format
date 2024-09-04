@@ -11,9 +11,9 @@ message(STATUS "CMake C++ compiler: ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "CMake system name: ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMake host system processor: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
-if(PROJECT_IS_TOP_LEVEL)
+if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-endif()
+endif ()
 
 # C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -21,7 +21,7 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 add_subdirectory(src)
 
-if(PROJECT_IS_TOP_LEVEL)
+if (PROJECT_IS_TOP_LEVEL)
     option(i18n_format_DOCS "Build the i18n_format documentation" ON)
     option(i18n_format_UNIT_TESTS "Build the i18n_format unit tests" ON)
 
@@ -32,7 +32,7 @@ if(PROJECT_IS_TOP_LEVEL)
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 
-    if(MSVC AND WIN32)
+    if (MSVC AND WIN32)
         # Enable edit and continue only in debug due to perf hit in release
         # add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
         # add_compile_options($<$<CONFIG:Debug>:/ZI>)
@@ -41,18 +41,18 @@ if(PROJECT_IS_TOP_LEVEL)
         # set(CMAKE_CXX_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
         # set(CMAKE_C_FLAGS_RELWITHDEBINFO "/GS- /Gy /O2 /Oi /Ot")
         # set(CMAKE_C_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
-    endif()
+    endif ()
 
     # Tests need static linkage because they test internal i18n_format functions
-    if(NOT BUILD_SHARED_LIBS AND i18n_format_UNIT_TESTS)
+    if (NOT BUILD_SHARED_LIBS AND i18n_format_UNIT_TESTS)
         message(STATUS "Adding i18n_format unit tests")
         add_subdirectory(test)
         set_target_properties(test PROPERTIES XCODE_GENERATE_SCHEME TRUE)
-    else()
+    else ()
         message(STATUS "Skipping i18n_format unit tests")
-    endif()
+    endif ()
 
-    if(i18n_format_DOCS)
+    if (i18n_format_DOCS)
         add_subdirectory(docs)
-    endif()
-endif()
+    endif ()
+endif ()

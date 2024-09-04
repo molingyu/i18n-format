@@ -19,6 +19,6 @@ if (MSVC)
 elseif (APPLE)
     # determinism settings
     target_compile_options(test PRIVATE -ffp-contract=off)
-endif()
+endif ()
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" PREFIX "" FILES ${i18n_format_TESTS})

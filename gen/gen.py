@@ -5,11 +5,12 @@ from jinja2 import PackageLoader, Environment, FileSystemLoader
 
 TemplateLoader = FileSystemLoader(os.path.abspath("../gen/template"))
 
-env = Environment(loader = TemplateLoader)
+env = Environment(loader=TemplateLoader)
 
 gens = [
     'word2number'
 ]
+
 
 def word2number_gen(include_list):
     return {
@@ -19,6 +20,7 @@ def word2number_gen(include_list):
         'word2numberf_table': '',
         'number2wordf_table': '',
     }
+
 
 def code_gen(template_name):
     print("generator %s.c" % template_name)
@@ -32,6 +34,7 @@ def code_gen(template_name):
 
     f.write(template.render(globals()["%s_gen" % template_name](include_list)))
     f.close()
+
 
 for name in gens:
     code_gen(name)
