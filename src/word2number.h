@@ -191,13 +191,13 @@ struct number2wordf_lang_method_table
     char* (*method)(double);
 };
 
-static struct word2number_lang_method_table word2number_table[];
+extern struct word2number_lang_method_table word2number_table[];
 
-static struct number2word_lang_method_table number2word_table[];
+extern struct number2word_lang_method_table number2word_table[];
 
-static struct word2numberf_lang_method_table word2numberf_table[];
+extern struct word2numberf_lang_method_table word2numberf_table[];
 
-static struct number2wordf_lang_method_table number2wordf_table[];
+extern struct number2wordf_lang_method_table number2wordf_table[];
 
 long word2number(char* word, char* input_lang);
 
