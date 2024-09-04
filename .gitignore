@@ -14,3 +14,6 @@ build/
 CMakeUserPresets.json
 .cache/
 
+# Gen
+src/gen/
+
