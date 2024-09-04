@@ -22,7 +22,7 @@ file(GLOB LOCALE "./locale/**/*.c")
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES_H} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+add_library(i18n_format ${SOURCE_FILES} ${GEN_SOURCES_H} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
 
 add_dependencies(i18n_format codeGen)
 
