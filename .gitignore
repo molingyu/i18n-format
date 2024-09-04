@@ -1,0 +1,16 @@
+# CMake
+cmake-build-*/
+
+# IDE
+.idea/
+.vscode/
+.vs/
+
+# Output
+build/
+
+# Other
+.DS_Store
+CMakeUserPresets.json
+.cache/
+
