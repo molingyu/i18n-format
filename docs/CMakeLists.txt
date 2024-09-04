@@ -20,7 +20,7 @@ set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
 set(DOXYGEN_IMAGE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/images")
 set(DOXYGEN_HTML_EXTRA_STYLESHEET "${CMAKE_CURRENT_SOURCE_DIR}/extra.css")
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${CMAKE_CURRENT_SOURCE_DIR}/overview.md")
-set(DOXYGEN_PROJECT_LOGO "${CMAKE_CURRENT_SOURCE_DIR}/images/logo.svg")
+#set(DOXYGEN_PROJECT_LOGO "${CMAKE_CURRENT_SOURCE_DIR}/images/logo.svg")
 set(DOXYGEN_LAYOUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/layout.xml")
 
 set(DOXYGEN_INLINE_SIMPLE_STRUCTS YES)
@@ -39,8 +39,6 @@ set(DOXYGEN_WARN_IF_INCOMPLETE_DOC NO)
 doxygen_add_docs(doc
         "${CMAKE_SOURCE_DIR}/include/i18n-format"
         "overview.md"
-        "hello.md"
-        "samples.md"
         "faq.md"
         ALL
         COMMENT "Generate HTML documentation")
