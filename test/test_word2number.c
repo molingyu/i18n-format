@@ -1,7 +1,7 @@
 //        GNU LESSER GENERAL PUBLIC LICENSE
 //                        Version 3, 29 June 2007
 //
-//  Copyright (C) 2024 I18n-format Foundation.
+//  Copyright (C) 2024 I18n-format contributors.
 //  Everyone is permitted to copy and distribute verbatim copies
 //  of this license document, but changing it is not allowed.
 //
