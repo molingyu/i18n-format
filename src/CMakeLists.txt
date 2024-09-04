@@ -1,17 +1,28 @@
-set(SOURCE_FILES
+add_custom_target(codeGen
+        COMMAND python ../gen/gen.py
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
+set(SOURCE_FILES
+        core.c
+        core.h
+        word2number.h
 )
 
 set(API_FILES
         ../include/i18n-format/base.h
 )
 
+file(GLOB GEN_SOURCES "src/gen/*.c")
+
 # Hide internal functions
 # https://gcc.gnu.org/wiki/Visibility
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-add_library(i18n_format ${SOURCE_FILES} ${API_FILES})
+add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES} ${API_FILES})
+
+add_dependencies(i18n_format codeGen)
 
 # Generate i18n_format_export.h to handles shared library builds
 # turned this off to make i18n_format easier to use without cmake
@@ -31,6 +42,7 @@ set(CMAKE_DEBUG_POSTFIX "d")
 
 # i18n_format uses C17
 set_target_properties(i18n_format PROPERTIES
+        LINKER_LANGUAGE C
         C_STANDARD 17
         C_STANDARD_REQUIRED YES
         C_EXTENSIONS YES
