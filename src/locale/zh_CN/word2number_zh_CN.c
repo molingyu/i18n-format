@@ -164,20 +164,24 @@
 // permanent authorization for you to choose that version for the
 // Library.
 
-#include "word2number.h"
+#include "word2number_zh_CN.h"
 
-long word2number_zh_CN(char* word){
+long word2number_zh_CN( char* word )
+{
 	return 0;
 }
 
-char* number2word_zh_CN(long number){
+char* number2word_zh_CN( long number )
+{
 	return "test";
 }
 
-double word2numberf_zh_CN(char* word){
+double word2numberf_zh_CN( char* word )
+{
 	return 0;
 }
 
-char* number2wordf_zh_CN(double number){
+char* number2wordf_zh_CN( double number )
+{
 	return 0;
 }

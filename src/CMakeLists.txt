@@ -1,7 +1,4 @@
-add_custom_target(codeGen
-        COMMAND python ../gen/gen.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+find_package(Python3 REQUIRED)
 
 set(SOURCE_FILES
         core.h
@@ -11,25 +8,41 @@ set(API_FILES
         ../include/i18n-format/base.h
 )
 
-file(GLOB GEN_SOURCES_H "./gen/*.h")
-file(GLOB GEN_SOURCES "./gen/*.c")
-
-file(GLOB LOCALE_H "./locale/**/*.h")
-file(GLOB LOCALE "./locale/**/*.c")
-
 # Hide internal functions
 # https://gcc.gnu.org/wiki/Visibility
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+set(GEN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/gen")
 
-add_library(i18n_format ${SOURCE_FILES} ${GEN_SOURCES_H} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+file(GLOB LOCALE_H "./locale/**/*.h")
+file(GLOB LOCALE "./locale/**/*.c")
+
+file(GLOB GEN_SOURCES_H "${GEN_DIR}/*.h")
+file(GLOB GEN_SOURCES "${GEN_DIR}/*.c")
+
+add_custom_target(codeGenClean
+        COMMAND rm -f ${GEN_DIR}/*.c
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Clean code generation scripts"
+)
+
+add_custom_target(codeGen
+        COMMAND ${Python3_EXECUTABLE} ../gen/gen.py
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Running code generation script"
+        BYPRODUCTS ${GEN_DIR}/*.c
+)
+
+add_dependencies(codeGen codeGenClean)
+
+add_library(i18n_format ${SOURCE_FILES} ${LOCALE_H} ${GEN_SOURCES_H} ${LOCALE} ${API_FILES})
 
 add_dependencies(i18n_format codeGen)
 
-# Generate i18n_format_export.h to handles shared library builds
-# turned this off to make i18n_format easier to use without cmake
-# include(GenerateExportHeader)
-# generate_export_header(i18n_format)
+target_sources(i18n_format PRIVATE
+        ${GEN_SOURCES_H}
+        ${GEN_SOURCES}
+)
 
 target_include_directories(i18n_format
         PUBLIC
@@ -68,6 +81,11 @@ if (MSVC)
 
 
 elseif (MINGW)
+    if (BUILD_SHARED_LIBS)
+        set(CMAKE_SHARED_LIBRARY_PREFIX "")
+        set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+    endif ()
+
     message(STATUS "i18n_format on MinGW")
 elseif (APPLE)
     message(STATUS "i18n_format on Apple")
