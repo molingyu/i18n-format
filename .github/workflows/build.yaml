@@ -99,6 +99,9 @@ jobs:
         working-directory: ${{github.workspace}}
         run: cmake --build ./build --config ${{env.BUILD_TYPE}}
 
+      - name: echo dir
+      - run: tree ./
+
       - name: Test
         working-directory: ${{github.workspace}}/build
         run: ./bin/${{env.BUILD_TYPE}}/test
