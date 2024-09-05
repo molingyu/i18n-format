@@ -24,6 +24,7 @@ add_subdirectory(src)
 if (PROJECT_IS_TOP_LEVEL)
     option(i18n_format_DOCS "Build the i18n_format documentation" OFF)
     option(i18n_format_UNIT_TESTS "Build the i18n_format unit tests" ON)
+    option(BUILD_SHARED_LIBS "Build the i18n_format shared lib" OFF)
 
     include(GNUInstallDirs)
 
