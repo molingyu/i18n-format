@@ -166,7 +166,7 @@
 
 #include "test_macros.h"
 
-#include "gen/word2number.h"
+#include "word2number.h"
 
 int Word2NumberTest( void ) {
 	const int num = word2number("一", "zh_CN");

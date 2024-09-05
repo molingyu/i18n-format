@@ -2,6 +2,7 @@ find_package(Python3 REQUIRED)
 
 set(SOURCE_FILES
         core.h
+        word2number.h
 )
 
 set(API_FILES
@@ -17,32 +18,9 @@ set(GEN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/gen")
 file(GLOB LOCALE_H "./locale/**/*.h")
 file(GLOB LOCALE "./locale/**/*.c")
 
-file(GLOB GEN_SOURCES_H "${GEN_DIR}/*.h")
 file(GLOB GEN_SOURCES "${GEN_DIR}/*.c")
 
-add_custom_target(codeGenClean
-        COMMAND rm -f ${GEN_DIR}/*.c
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Clean code generation scripts"
-)
-
-add_custom_target(codeGen
-        COMMAND ${Python3_EXECUTABLE} ../gen/gen.py
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Running code generation script"
-        BYPRODUCTS ${GEN_DIR}/*.c
-)
-
-add_dependencies(codeGen codeGenClean)
-
-add_library(i18n_format ${SOURCE_FILES} ${LOCALE_H} ${GEN_SOURCES_H} ${LOCALE} ${API_FILES})
-
-add_dependencies(i18n_format codeGen)
-
-target_sources(i18n_format PRIVATE
-        ${GEN_SOURCES_H}
-        ${GEN_SOURCES}
-)
+add_library(i18n_format ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
 
 target_include_directories(i18n_format
         PUBLIC
