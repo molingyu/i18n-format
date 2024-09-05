@@ -21,6 +21,9 @@ jobs:
           python-version: '3.10'
       - run: pip install jinja2
 
+      - name: Code Gen
+        run: python ${{github.workspace}}/gen/gen.py
+
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -42,6 +45,9 @@ jobs:
         with:
           python-version: '3.10'
       - run: pip install jinja2
+
+      - name: Code Gen
+        run: python ${{github.workspace}}/gen/gen.py
 
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=clang++-14 -DCMAKE_C_COMPILER=clang
@@ -65,6 +71,9 @@ jobs:
           python-version: '3.10'
       - run: pip install jinja2
 
+      - name: Code Gen
+        run: python ${{github.workspace}}/gen/gen.py
+
       - name: Configure CMake
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
@@ -86,6 +95,9 @@ jobs:
         with:
           python-version: '3.10'
       - run: pip install jinja2
+
+      - name: Code Gen
+        run: python ${{github.workspace}}/gen/gen.py
 
       - name: Setup MSVC dev command prompt
         uses: TheMrMilchmann/setup-msvc-dev@v3
