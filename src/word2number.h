@@ -166,22 +166,28 @@
 
 #pragma once
 
+struct number_system
+{
+    char* number_word;
+    long long number;
+};
+
 struct word2number_lang_method_table
 {
     const char *code;
-    long (*method)(char*);
+    long long (*method)(const char*);
 };
 
 struct word2numberf_lang_method_table
 {
     const char *code;
-    double (*method)(char*);
+    double (*method)(const char*);
 };
 
 struct number2word_lang_method_table
 {
     const char *code;
-    char* (*method)(long);
+    char* (*method)(long long);
 };
 
 struct number2wordf_lang_method_table
@@ -198,14 +204,16 @@ extern struct word2numberf_lang_method_table word2numberf_table[];
 
 extern struct number2wordf_lang_method_table number2wordf_table[];
 
-long word2number(char* word, const char* input_lang);
+long long word2number(const char* word, const char* input_lang);
 
-char* number2word(long number, const char* output_lang);
+char* number2word(long long number, const char* output_lang);
 
-char* word2word(char* word, const char* input_lang, const char* output_lang);
+char* word2word(const char* word, const char* input_lang, const char* output_lang);
 
-double word2numberf(char* word, const char* input_lang);
+double word2numberf(const char* word, const char* input_lang);
 
 char* number2wordf(double number, const char* output_lang);
 
-char* word2wordf(char* word, const char* input_lang, const char* output_lang);
+char* word2wordf(const char* word, const char* input_lang, const char* output_lang);
+
+long long get_correspond_number(const char* number_word, const struct number_system* dict);

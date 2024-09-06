@@ -3,6 +3,8 @@ find_package(Python3 REQUIRED)
 set(SOURCE_FILES
         core.h
         word2number.h
+        core.c
+        define.h
 )
 
 set(API_FILES
