@@ -166,10 +166,10 @@
 
 #pragma once
 
-long word2number_zh_CN(char* word);
+long long word2number_zh_CN(const char* word);
 
-char* number2word_zh_CN(long number);
+char* number2word_zh_CN(long long number);
 
-double word2numberf_zh_CN(char* word);
+double word2numberf_zh_CN(const char* word);
 
 char* number2wordf_zh_CN(double number);

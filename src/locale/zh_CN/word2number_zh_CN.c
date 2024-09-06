@@ -166,17 +166,132 @@
 
 #include "word2number_zh_CN.h"
 
-long word2number_zh_CN( char* word )
+#include "../../core.h"
+#include "../../word2number.h"
+
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+struct number_system number_zh_CN[] = {
+	{ "负", -2 },
+	{ "点", -1 },
+	{ "零", 0 },
+	{ "一", 1 },
+	{ "二", 2 },
+	{ "三", 3 },
+	{ "四", 4 },
+	{ "五", 5 },
+	{ "六", 6 },
+	{ "七", 7 },
+	{ "八", 8 },
+	{ "九", 9 },
+	{ "十", 10 },
+	{ "百", 100 },
+	{ "千", 1000 },
+	{ "万", 10000 },
+	{ "亿", 100000000 },
+	{ "兆", 1000000000000 },
+	{ "京", 10000000000000000 },
+};
+
+struct word2number_zh_CN_each_block_data
 {
+	long number[32];
+	long data_index;
+};
+
+struct validate_word_block_data
+{
+	char prev_char[4];
+	int has_digit;
+	int has_unit;
+	int is_valid;
+};
+
+int is_valid_char(const char* chr) {
+	for (size_t i = 0; i < sizeof(number_zh_CN) / sizeof(number_zh_CN[0]); i++) {
+		if (strcmp(chr, number_zh_CN[i].number_word) == 0) {
+			return 1;
+		}
+	}
 	return 0;
 }
 
-char* number2word_zh_CN( long number )
+int is_digit(const char* chr) {
+	const long val = get_correspond_number(chr, number_zh_CN);
+	return val >= 0 && val <= 9;
+}
+
+int is_unit(const char* chr) {
+	const long val = get_correspond_number( chr, number_zh_CN);
+	return val >= 10;
+}
+
+void validate_word_block(size_t _, const char* chr, void* data) {
+	struct validate_word_block_data* block_data = data;
+
+	if (!is_valid_char(chr)) {
+		block_data->is_valid = 0;
+		return;
+	}
+	if (is_unit(chr) && is_unit(block_data->prev_char)) {
+		block_data->is_valid = 0;
+		return;
+	}
+	if (is_digit(chr)) {
+		block_data->has_digit = 1;
+	} else if (is_unit(chr)) {
+		block_data->has_unit = 1;
+	}
+	strncpy(block_data->prev_char, chr, sizeof(block_data->prev_char));
+}
+
+void word2number_zh_CN_each_block(size_t _, const char* chr, void* data)
+{
+	struct word2number_zh_CN_each_block_data* block_data = data;
+	block_data->number[block_data->data_index] = get_correspond_number(chr, number_zh_CN);
+}
+
+int validate_word_zh_CN(const char* word) {
+	struct validate_word_block_data data = { .prev_char = "", .has_digit = 0, .has_unit = 0, .is_valid = 1 };
+	utf8_chr_each(word, &validate_word_block, &data);
+	return data.is_valid;
+}
+
+long long word2number_zh_CN(const char* word)
+{
+	if (validate_word_zh_CN(word) == 0)
+	{
+		TRACE("input word error!\n");
+		errno = EINVAL;
+		return 0;
+	}
+	struct word2number_zh_CN_each_block_data data = { .data_index = 0 };
+	utf8_chr_each(word, & word2number_zh_CN_each_block, & data);
+	long result = 0;
+	long temp = 0;
+	for (size_t i = 0; i < data.data_index; i++) {
+		if (data.number[i] >= 10) {
+			if (temp == 0) {
+				temp = 1;
+			}
+			temp *= data.number[i];
+		} else {
+			result += temp;
+			temp = data.number[i];
+		}
+	}
+	result += temp;
+	return result;
+}
+
+char* number2word_zh_CN(long long number)
 {
 	return "test";
 }
 
-double word2numberf_zh_CN( char* word )
+double word2numberf_zh_CN(const char* word)
 {
 	return 0;
 }
