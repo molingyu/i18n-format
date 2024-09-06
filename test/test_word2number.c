@@ -164,15 +164,14 @@
 // permanent authorization for you to choose that version for the
 // Library.
 
+#include "core.h"
 #include "test_macros.h"
-
 #include "word2number.h"
 
 int Word2NumberTest( void ) {
-	const int num = word2number("一", "zh_CN");
-	printf("%d\n", num);
+	ENSURE(word2number("一", "zh_CN") == 1);
+	ENSURE(word2number("一千三百二十四", "zh_CN") == 1324);
+	ENSURE(word2number("一亿二千三百四十五万六千七百八十九", "zh_CN") == 123456789);
 
-	const char* word = number2word(2, "zh_CN");
-	printf("%s\n", word);
     return 0;
 }
