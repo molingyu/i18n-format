@@ -14,7 +14,7 @@ set_target_properties(test PROPERTIES
 )
 
 if (UNIX)
-    target_link_libraries(test rt)
+    target_link_libraries(test PRIVATE rt)
 endif ()
 
 # Special access to i18n-format internals for testing
