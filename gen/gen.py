@@ -13,12 +13,14 @@ gens = [
 
 def word2number_gen(include_list):
     include = ''
+    validate_table = ''
     word2number_table = ''
     number2word_table = ''
     word2numberf_table = ''
     number2wordf_table = ''
     for path in include_list:
         include += f'#include "../locale/{path}/word2number_{path}.h"\n'
+        validate_table += f'{{ "{path}", & validate_word_{path} }},\n'
         word2number_table += f'{{ "{path}", & word2number_{path} }},\n'
         number2word_table += f'{{ "{path}", & number2word_{path} }},\n'
         word2numberf_table += f'{{ "{path}", & word2numberf_{path} }},\n'
@@ -26,6 +28,7 @@ def word2number_gen(include_list):
 
     return {
         'include': include,
+        'validate_table': validate_table,
         'word2number_table': word2number_table,
         'number2word_table': number2word_table,
         'word2numberf_table': word2numberf_table,

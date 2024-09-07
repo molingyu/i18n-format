@@ -165,36 +165,46 @@
 // Library.
 
 #pragma once
+#include <stdbool.h>
+#include <stddef.h>
 
 struct number_system
 {
-    char* number_word;
-    long long number;
+	char* number_word;
+	long long number;
+};
+
+struct validate_lang_method_table
+{
+	const char* code;
+	bool ( *method )( const char* );
 };
 
 struct word2number_lang_method_table
 {
-    const char *code;
-    long long (*method)(const char*);
+	const char* code;
+	long long ( *method )( const char* );
 };
 
 struct word2numberf_lang_method_table
 {
-    const char *code;
-    double (*method)(const char*);
+	const char* code;
+	double ( *method )( const char* );
 };
 
 struct number2word_lang_method_table
 {
-    const char *code;
-    char* (*method)(long long);
+	const char* code;
+	char* ( *method )( long long );
 };
 
 struct number2wordf_lang_method_table
 {
-    const char *code;
-    char* (*method)(double);
+	const char* code;
+	char* ( *method )( double );
 };
+
+extern struct validate_lang_method_table validate_table[];
 
 extern struct word2number_lang_method_table word2number_table[];
 
@@ -204,16 +214,20 @@ extern struct word2numberf_lang_method_table word2numberf_table[];
 
 extern struct number2wordf_lang_method_table number2wordf_table[];
 
-long long word2number(const char* word, const char* input_lang);
+bool validate_word( const char* word, const char* input_lang );
 
-char* number2word(long long number, const char* output_lang);
+long long word2number( const char* word, const char* input_lang );
 
-char* word2word(const char* word, const char* input_lang, const char* output_lang);
+char* number2word( long long number, const char* output_lang );
 
-double word2numberf(const char* word, const char* input_lang);
+char* word2word( const char* word, const char* input_lang, const char* output_lang );
 
-char* number2wordf(double number, const char* output_lang);
+double word2numberf( const char* word, const char* input_lang );
 
-char* word2wordf(const char* word, const char* input_lang, const char* output_lang);
+char* number2wordf( double number, const char* output_lang );
 
-long long get_correspond_number(const char* number_word, const struct number_system* dict);
+char* word2wordf( const char* word, const char* input_lang, const char* output_lang );
+
+long long get_correspond_number( const char* number_word, const struct number_system* dict, size_t size );
+
+bool number_word_has( const char* number_word, const struct number_system* dict, size_t size );
