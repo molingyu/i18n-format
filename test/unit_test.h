@@ -166,103 +166,126 @@
 
 #pragma once
 
-#include <assert.h>
-#include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
+
+extern int _utest_test_units_total;
+extern int _utest_test_units_failed;
+extern int _utest_test_units_passed;
+
+extern int _utest_test_suite_total;
+extern int _utest_test_suite_failed;
+extern int _utest_test_suite_passed;
+
+extern int _utest_test_closure_total;
+extern int _utest_test_closure_failed;
+extern int _utest_test_closure_passed;
+
+extern char* _utest_current_test_unit_name;
+extern clock_t _utest_test_start, _utest_test_end;
+
+extern int _utest_test_unit_return;
+
+#define TEST_START( T, BLOCK )                                                                                                   \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		printf( "Tarting %s unit tests\n", T );                                                                                  \
+		printf( "\n" );                                                                                                          \
+		_utest_test_start = clock();                                                                                             \
+		BLOCK;                                                                                                                   \
+		_utest_test_end = clock();                                                                                               \
+		printf( "\n" );                                                                                                          \
+		printf( "Test Suites: \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_suite_failed,         \
+				_utest_test_suite_passed, _utest_test_suite_total );                                                             \
+		printf( "Test:        \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_units_failed,         \
+				_utest_test_units_passed, _utest_test_units_total );                                                             \
+		printf( "Time:        %.4f s\n", (double)( _utest_test_end - _utest_test_start ) / CLK_TCK );                            \
+		printf( "\nRan all test suites.\n" );                                                                                    \
+		if ( _utest_test_units_failed == 0 )                                                                                     \
+		{                                                                                                                        \
+			return 0;                                                                                                            \
+		}                                                                                                                        \
+		else                                                                                                                     \
+		{                                                                                                                        \
+			return 1;                                                                                                            \
+		}                                                                                                                        \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define UNIT_START printf( "Runs: %s\n", __FILE__ );
+#define UNIT_END return _utest_test_unit_return;
 
 #define RUN_TEST( T )                                                                                                            \
 	do                                                                                                                           \
 	{                                                                                                                            \
+		_utest_current_test_unit_name = #T;                                                                                      \
+		_utest_test_units_total += 1;                                                                                            \
+		_utest_test_unit_return = 0;                                                                                             \
 		int result = T();                                                                                                        \
 		if ( result == 1 )                                                                                                       \
 		{                                                                                                                        \
-			printf( "test failed: " #T "\n" );                                                                                   \
-			return 1;                                                                                                            \
+			_utest_test_units_failed += 1;                                                                                       \
 		}                                                                                                                        \
 		else                                                                                                                     \
 		{                                                                                                                        \
-			printf( "test passed: " #T "\n" );                                                                                   \
+			_utest_test_units_passed += 1;                                                                                       \
 		}                                                                                                                        \
 	}                                                                                                                            \
 	while ( 0 )
 
-#define RUN_SUBTEST( T )                                                                                                         \
+#define DESCRIBE( NAME, BLOCK )                                                                                                  \
 	do                                                                                                                           \
 	{                                                                                                                            \
-		int result = T();                                                                                                        \
-		if ( result == 1 )                                                                                                       \
+		_utest_current_test_unit_name = NAME;                                                                                    \
+		BLOCK;                                                                                                                   \
+	}                                                                                                                            \
+	while ( 0 )
+
+// Creates a test closure
+#define UT_IT( DESC, BLOCK )                                                                                                     \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		_utest_test_closure_total = 0;                                                                                           \
+		_utest_test_closure_failed = 0;                                                                                          \
+		_utest_test_closure_passed = 0;                                                                                          \
+		_utest_test_suite_total += 1;                                                                                            \
+		BLOCK;                                                                                                                   \
+		if ( _utest_test_closure_failed > 0 )                                                                                    \
 		{                                                                                                                        \
-			printf( "  subtest failed: " #T "\n" );                                                                              \
-			return 1;                                                                                                            \
+			_utest_test_suite_failed += 1;                                                                                       \
+			printf( "  \033[31m● %s > %s\033[0m\n", _utest_current_test_unit_name, DESC );                                      \
+			_utest_test_unit_return = 1;                                                                                         \
 		}                                                                                                                        \
 		else                                                                                                                     \
 		{                                                                                                                        \
-			printf( "  subtest passed: " #T "\n" );                                                                              \
+			_utest_test_suite_passed += 1;                                                                                       \
 		}                                                                                                                        \
 	}                                                                                                                            \
 	while ( 0 )
 
-#define ENSURE( C )                                                                                                              \
+#define EXPECT_TRUE( C )                                                                                                         \
 	do                                                                                                                           \
 	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
 		if ( ( C ) == 0 )                                                                                                        \
 		{                                                                                                                        \
-			printf( "condition false: " #C "\n" );                                                                               \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "\033[31m  %s(%d): '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                       \
 		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
 	while ( 0 )
 
-#define ENSURE_EQUAL( A, B )                                                                                                     \
+#define EXPECT_EQUAL( A, B )                                                                                                     \
 	do                                                                                                                           \
 	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
 		if ( ( A ) != ( B ) )                                                                                                    \
 		{                                                                                                                        \
-			printf( "Test Fail: " #A " != " #B " (actual: %lld, %lld)\n", (long long)( A ), (long long)( B ) );                  \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "    \033[31mTest Fail: " #A " != " #B " (actual: %lld, %lld).\033[0m\n\n", (long long)( A ),                \
+					(long long)( B ) );                                                                                          \
 		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
 	while ( 0 )
-
-#define ENSURE_EQUAL_INT( A, B )                                                                                                 \
-	do                                                                                                                           \
-	{                                                                                                                            \
-		if ( ( A ) != ( B ) )                                                                                                    \
-		{                                                                                                                        \
-			printf( "Test Fail: " #A " != " #B " (actual: %d, %d)\n", (int)( A ), (int)( B ) );                                  \
-		}                                                                                                                        \
-	}                                                                                                                            \
-	while ( 0 )
-
-#define ENSURE_EQUAL_FLOAT( A, B )                                                                                               \
-	do                                                                                                                           \
-	{                                                                                                                            \
-		if ( ( A ) != ( B ) )                                                                                                    \
-		{                                                                                                                        \
-			printf( "Test Fail: " #A " != " #B " (actual: %f, %f)\n", (float)( A ), (float)( B ) );                              \
-		}                                                                                                                        \
-	}                                                                                                                            \
-	while ( 0 )
-
-#define ENSURE_EQUAL_STR( A, B )                                                                                                 \
-	do                                                                                                                           \
-	{                                                                                                                            \
-		if ( strcmp( ( A ), ( B ) ) != 0 )                                                                                       \
-		{                                                                                                                        \
-			printf( "Test Fail: " #A " != " #B " (actual: %s, %s)\n", ( A ), ( B ) );                                            \
-		}                                                                                                                        \
-	}                                                                                                                            \
-	while ( 0 )
-
-#define ENSURE_SMALL( C, tol )                                                                                                   \
-	do                                                                                                                           \
-	{                                                                                                                            \
-		if ( ( C ) < -( tol ) || ( tol ) < ( C ) )                                                                               \
-		{                                                                                                                        \
-			printf( "condition false: abs(" #C ") < %g\n", tol );                                                                \
-		}                                                                                                                        \
-	}                                                                                                                            \
-	while ( 0 )
-
-#define ARRAY_COUNT( A ) (int)( sizeof( A ) / sizeof( A[0] ) )
-
-/// Used to prevent the compiler from warning about unused variables
-#define MAYBE_UNUSED( x ) ( (void)( x ) )
