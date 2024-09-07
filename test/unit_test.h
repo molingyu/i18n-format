@@ -166,7 +166,10 @@
 
 #pragma once
 
-#define _POSIX_C_SOURCE 199309L
+#ifdef __linux__
+#include <sys/time.h>
+#endif
+
 #include <stdio.h>
 #include <time.h>
 
@@ -183,25 +186,38 @@ extern int _utest_test_closure_failed;
 extern int _utest_test_closure_passed;
 
 extern char* _utest_current_test_unit_name;
-extern struct timespec _utest_test_start, _utest_test_end;
 
 extern int _utest_test_unit_return;
+
+#ifdef __linux__
+extern struct timeval _utest_test_start, _utest_test_end;
+#define CURRENT_TIME( A ) gettimeofday( &A, NULL );
+#define ELAPSED                                                                                                                  \
+	(double)( ( 1000000 * ( _utest_test_end.tv_sec - _utest_test_start.tv_sec ) +                                                \
+				( _utest_test_end.tv_usec - _utest_test_start.tv_usec ) ) /                                                      \
+			  1000000.0 )
+#else
+extern struct timespec _utest_test_start, _utest_test_end;
+#define CURRENT_TIME( A ) clock_gettime( CLOCK_MONOTONIC, &A );
+#define ELAPSED                                                                                                                  \
+	(double)( ( _utest_test_end.tv_sec - _utest_test_start.tv_sec ) +                                                            \
+			  ( _utest_test_end.tv_nsec - _utest_test_start.tv_nsec ) / 1e9 )
+#endif
 
 #define TEST_START( T, BLOCK )                                                                                                   \
 	do                                                                                                                           \
 	{                                                                                                                            \
 		printf( "Tarting %s unit tests\n", T );                                                                                  \
 		printf( "\n" );                                                                                                          \
-		clock_gettime( CLOCK_MONOTONIC, &_utest_test_start );                                                                    \
+		CURRENT_TIME( _utest_test_start );                                                                                       \
 		BLOCK;                                                                                                                   \
-		clock_gettime( CLOCK_MONOTONIC, &_utest_test_end );                                                                      \
+		CURRENT_TIME( _utest_test_end );                                                                                         \
 		printf( "\n" );                                                                                                          \
 		printf( "Test Suites: \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_suite_failed,         \
 				_utest_test_suite_passed, _utest_test_suite_total );                                                             \
 		printf( "Test:        \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_units_failed,         \
 				_utest_test_units_passed, _utest_test_units_total );                                                             \
-		printf( "Time:        %.4f s\n", (double)( ( _utest_test_end.tv_sec - _utest_test_start.tv_sec ) +                       \
-												   ( _utest_test_end.tv_nsec - _utest_test_start.tv_nsec ) / 1e9 ) );            \
+		printf( "Time:        %.4f s\n", ELAPSED );                                                                              \
 		printf( "\nRan all test suites.\n" );                                                                                    \
 		if ( _utest_test_units_failed == 0 )                                                                                     \
 		{                                                                                                                        \

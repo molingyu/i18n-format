@@ -179,6 +179,9 @@ int _utest_test_closure_failed = 0;
 int _utest_test_closure_passed = 0;
 
 char* _utest_current_test_unit_name = "";
+#ifdef __linux__
+struct timeval _utest_test_start, _utest_test_end;
+#else
 struct timespec _utest_test_start, _utest_test_end;
-
+#endif
 int _utest_test_unit_return = 0;
