@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.16.3)
 project(i18n_format
         VERSION 0.1.0
         DESCRIPTION "Multi-language conversion and text generation of formatted data."
@@ -32,17 +32,6 @@ if (PROJECT_IS_TOP_LEVEL)
             DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/i18n_format"
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
-
-    if (MSVC AND WIN32)
-        # Enable edit and continue only in debug due to perf hit in release
-        # add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
-        # add_compile_options($<$<CONFIG:Debug>:/ZI>)
-        # add_compile_options(/fsanitize=address)
-        # set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/GS- /Gy /O2 /Oi /Ot")
-        # set(CMAKE_CXX_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
-        # set(CMAKE_C_FLAGS_RELWITHDEBINFO "/GS- /Gy /O2 /Oi /Ot")
-        # set(CMAKE_C_FLAGS_RELEASE "/GS- /Gy /O2 /Oi /Ot")
-    endif ()
 
     # Tests need static linkage because they test internal i18n_format functions
     if (NOT BUILD_SHARED_LIBS AND i18n_format_UNIT_TESTS)
