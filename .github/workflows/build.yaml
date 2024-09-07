@@ -99,13 +99,13 @@ jobs:
       - name: Code Gen
         run: python ${{github.workspace}}/gen/gen.py
 
-      - name: Setup MSVC dev command prompt
-        uses: TheMrMilchmann/setup-msvc-dev@v3
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2
         with:
-          arch: x64
+          platform: x64
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}  -G "MinGW Makefiles"
 
       - name: Build
         working-directory: ${{github.workspace}}
