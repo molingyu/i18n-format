@@ -163,52 +163,63 @@
 // apply, that proxy's public statement of acceptance of any version is
 // permanent authorization for you to choose that version for the
 // Library.
-#include <string.h>
-
 #include "core.h"
+
 #include "define.h"
+
+#include <string.h>
 
 char* fallback_lang = LANG_EN;
 
-int utf8_char_length(const unsigned char c)
+int utf8_char_length( const unsigned char c )
 {
-	if ((c & 0x80) == 0)        return 1;  // ASCII character (1 byte)
-	if ((c & 0xE0) == 0xC0)     return 2;  // 2-byte character
-	if ((c & 0xF0) == 0xE0)     return 3;  // 3-byte character
-	if ((c & 0xF8) == 0xF0)     return 4;  // 4-byte character
-	return 0; // Invalid UTF-8 start byte
+	if ( ( c & 0x80 ) == 0 )
+		return 1; // ASCII character (1 byte)
+	if ( ( c & 0xE0 ) == 0xC0 )
+		return 2; // 2-byte character
+	if ( ( c & 0xF0 ) == 0xE0 )
+		return 3; // 3-byte character
+	if ( ( c & 0xF8 ) == 0xF0 )
+		return 4; // 4-byte character
+	return 0;	  // Invalid UTF-8 start byte
 }
 
-size_t utf8_strlen(const char* utf8_str)
+size_t utf8_strlen( const char* utf8_str )
 {
 	size_t length = 0;
 	const unsigned char* str = (const unsigned char*)utf8_str;
 	size_t i = 0;
-	while (str[i] != '\0') {
-		const int len = utf8_char_length(str[i]);
+	while ( str[i] != '\0' )
+	{
+		const int len = utf8_char_length( str[i] );
 		i += len;
 		length++;
 	}
 	return length;
 }
 
-void utf8_chr_each(const char* utf8_str, void (*each_block)(size_t, const char*, void*), void* extra_data)
+bool utf8_chr_each( const char* utf8_str, bool ( *each_block )( size_t, const char*, void* ), void* extra_data )
 {
 	size_t pos = 0;
 	size_t i = 0;
-	const size_t len = strlen(utf8_str);
-	while (pos < len)
+	const size_t len = strlen( utf8_str );
+	while ( pos < len )
 	{
-		const size_t char_len = utf8_char_length(utf8_str[pos]);
-		if (char_len == 0 || pos + char_len > len) {
+		const size_t char_len = utf8_char_length( utf8_str[pos] );
+		if ( char_len == 0 || pos + char_len > len )
+		{
 			break;
 		}
-		char utf8_char[5] = {0};
-		strncpy(utf8_char, &utf8_str[pos], char_len);
+		char utf8_char[5] = { 0 };
+		strncpy( utf8_char, &utf8_str[pos], char_len );
 		utf8_char[char_len] = '\0';
 
-		each_block(i, utf8_char, extra_data);
+		if ( each_block( i, utf8_char, extra_data ) == 0 )
+		{
+			return false;
+		}
 		pos += char_len;
 		i++;
 	}
+	return true;
 }
