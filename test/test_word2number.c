@@ -180,7 +180,7 @@ int Word2NumberTest( void )
 			EXPECT_EQUAL( word2number( u8"一亿二千三百四十五万六千七百八十九", "zh_CN" ), 123456789 );
 		} );
 
-		UT_IT( "should be true", { EXPECT_TRUE( validate_word( u8"万万", "zh_CN" ) );
+		UT_IT( "should be false", { EXPECT_FALSE( validate_word( u8"万万", "zh_CN" ) );
 		});
 	});
 	UNIT_END

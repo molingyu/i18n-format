@@ -212,9 +212,6 @@ extern int _utest_test_unit_return;
 	}                                                                                                                            \
 	while ( 0 )
 
-#define UNIT_START printf( "Runs: %s\n", __FILE__ );
-#define UNIT_END return _utest_test_unit_return;
-
 #define RUN_TEST( T )                                                                                                            \
 	do                                                                                                                           \
 	{                                                                                                                            \
@@ -232,6 +229,9 @@ extern int _utest_test_unit_return;
 		}                                                                                                                        \
 	}                                                                                                                            \
 	while ( 0 )
+
+#define UNIT_START printf( "Runs: %s\n", __FILE__ );
+#define UNIT_END return _utest_test_unit_return;
 
 #define DESCRIBE( NAME, BLOCK )                                                                                                  \
 	do                                                                                                                           \
@@ -268,6 +268,19 @@ extern int _utest_test_unit_return;
 	{                                                                                                                            \
 		_utest_test_closure_total += 1;                                                                                          \
 		if ( ( C ) == 0 )                                                                                                        \
+		{                                                                                                                        \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "\033[31m  %s(%d): '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                       \
+		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define EXPECT_FALSE( C )                                                                                                        \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
+		if ( ( C ) != 0 )                                                                                                        \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
 			printf( "\033[31m  %s(%d): '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                       \
