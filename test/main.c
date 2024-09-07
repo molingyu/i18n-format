@@ -164,18 +164,12 @@
 // permanent authorization for you to choose that version for the
 // Library.
 
-#include "test_macros.h"
+#include "core.h"
+#include "unit_test.h"
 
 extern int Word2NumberTest( void );
 
 int main( void )
 {
-	printf( "Starting i18n-format unit tests\n" );
-	printf( "======================================\n" );
-	RUN_TEST( Word2NumberTest );
-
-	printf( "======================================\n" );
-	printf( "All i18n-format tests passed!\n" );
-
-	return 0;
+	TEST_START( "i18n-format", { RUN_TEST( Word2NumberTest ); } );
 }

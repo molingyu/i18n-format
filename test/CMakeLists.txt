@@ -1,6 +1,8 @@
 # i18n-format unit test app
 
 add_executable(test
+        unit_test.h
+        unit_test.c
         main.c
         test_word2number.c
 )
