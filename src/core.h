@@ -166,25 +166,21 @@
 
 #pragma once
 
-#include <stddef.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* -- Macro Definitions */
 
 #ifdef DEBUG
-#define TRACE(x)    db_print x
+#define TRACE_IMPL( fmt, ... ) fprintf( stderr, fmt, ##__VA_ARGS__ )
+#define TRACE( fmt, ... ) TRACE_IMPL( fmt, ##__VA_ARGS__ )
 #else
-#define TRACE(x)
+#define TRACE( x, ... )
 #endif /* DEBUG */
 
-/* -- Declarations */
+size_t utf8_strlen( const char* utf8_str );
 
-#ifdef DEBUG
-extern  int     debug;
-#endif
+int utf8_char_length( unsigned char c );
 
-
-size_t utf8_strlen(const char* utf8_str);
-
-int utf8_char_length(unsigned char c);
-
-void utf8_chr_each(const char* utf8_str, void (*each_block)(size_t, const char*, void*), void* extra_data);
+bool utf8_chr_each( const char* utf8_str, bool ( *each_block )( size_t, const char*, void* ), void* extra_data );
