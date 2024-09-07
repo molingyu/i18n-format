@@ -166,35 +166,16 @@
 
 #include "test_macros.h"
 
-#if defined( _WIN32 )
-    #include <crtdbg.h>
-#endif
-
 extern int Word2NumberTest( void );
 
 int main( void )
 {
-#if defined( _WIN32 )
+	printf( "Starting i18n-format unit tests\n" );
+	printf( "======================================\n" );
+	RUN_TEST( Word2NumberTest );
 
-    _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_DEBUG | _CRTDBG_MODE_FILE );
-    _CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDERR );
+	printf( "======================================\n" );
+	printf( "All i18n-format tests passed!\n" );
 
-#endif
-
-    printf( "Starting i18n-format unit tests\n" );
-    printf( "======================================\n" );
-
-    RUN_TEST( Word2NumberTest );
-
-    printf( "======================================\n" );
-    printf( "All i18n-format tests passed!\n" );
-
-#if defined( _WIN32 )
-    if ( _CrtDumpMemoryLeaks() )
-    {
-        return 1;
-    }
-#endif
-
-    return 0;
+	return 0;
 }

@@ -168,10 +168,13 @@
 #include "test_macros.h"
 #include "word2number.h"
 
-int Word2NumberTest( void ) {
-	ENSURE(word2number("一", "zh_CN") == 1);
-	ENSURE(word2number("一千三百二十四", "zh_CN") == 1324);
-	ENSURE(word2number("一亿二千三百四十五万六千七百八十九", "zh_CN") == 123456789);
-
+int Word2NumberTest( void )
+{
+	ENSURE_EQUAL( word2number( u8"一", "zh_CN" ), 1 );
+	ENSURE_EQUAL( word2number( u8"一千三百", "zh_CN" ), 1300 );
+	ENSURE_EQUAL( word2number( u8"一千亿零五万", "zh_CN" ), 100000050000 );
+	ENSURE_EQUAL( validate_word( u8"万万", "zh_CN" ), 0 );
+	ENSURE_EQUAL( word2number( u8"亿零万", "zh_CN" ), 100010000 );
+	ENSURE_EQUAL( word2number( u8"一亿二千三百四十五万六千七百八十九", "zh_CN" ), 123456789 );
     return 0;
 }

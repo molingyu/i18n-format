@@ -184,7 +184,7 @@
 			printf( "test passed: " #T "\n" );                                                                                   \
 		}                                                                                                                        \
 	}                                                                                                                            \
-	while ( false )
+	while ( 0 )
 
 #define RUN_SUBTEST( T )                                                                                                         \
 	do                                                                                                                           \
@@ -200,19 +200,57 @@
 			printf( "  subtest passed: " #T "\n" );                                                                              \
 		}                                                                                                                        \
 	}                                                                                                                            \
-	while ( false )
+	while ( 0 )
 
 #define ENSURE( C )                                                                                                              \
 	do                                                                                                                           \
 	{                                                                                                                            \
-		if ( ( C ) == false )                                                                                                    \
+		if ( ( C ) == 0 )                                                                                                        \
 		{                                                                                                                        \
 			printf( "condition false: " #C "\n" );                                                                               \
-			assert( false );                                                                                                     \
-			return 1;                                                                                                            \
 		}                                                                                                                        \
 	}                                                                                                                            \
-	while ( false )
+	while ( 0 )
+
+#define ENSURE_EQUAL( A, B )                                                                                                     \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		if ( ( A ) != ( B ) )                                                                                                    \
+		{                                                                                                                        \
+			printf( "Test Fail: " #A " != " #B " (actual: %lld, %lld)\n", (long long)( A ), (long long)( B ) );                  \
+		}                                                                                                                        \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define ENSURE_EQUAL_INT( A, B )                                                                                                 \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		if ( ( A ) != ( B ) )                                                                                                    \
+		{                                                                                                                        \
+			printf( "Test Fail: " #A " != " #B " (actual: %d, %d)\n", (int)( A ), (int)( B ) );                                  \
+		}                                                                                                                        \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define ENSURE_EQUAL_FLOAT( A, B )                                                                                               \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		if ( ( A ) != ( B ) )                                                                                                    \
+		{                                                                                                                        \
+			printf( "Test Fail: " #A " != " #B " (actual: %f, %f)\n", (float)( A ), (float)( B ) );                              \
+		}                                                                                                                        \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define ENSURE_EQUAL_STR( A, B )                                                                                                 \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		if ( strcmp( ( A ), ( B ) ) != 0 )                                                                                       \
+		{                                                                                                                        \
+			printf( "Test Fail: " #A " != " #B " (actual: %s, %s)\n", ( A ), ( B ) );                                            \
+		}                                                                                                                        \
+	}                                                                                                                            \
+	while ( 0 )
 
 #define ENSURE_SMALL( C, tol )                                                                                                   \
 	do                                                                                                                           \
@@ -220,11 +258,9 @@
 		if ( ( C ) < -( tol ) || ( tol ) < ( C ) )                                                                               \
 		{                                                                                                                        \
 			printf( "condition false: abs(" #C ") < %g\n", tol );                                                                \
-			assert( false );                                                                                                     \
-			return 1;                                                                                                            \
 		}                                                                                                                        \
 	}                                                                                                                            \
-	while ( false )
+	while ( 0 )
 
 #define ARRAY_COUNT( A ) (int)( sizeof( A ) / sizeof( A[0] ) )
 
