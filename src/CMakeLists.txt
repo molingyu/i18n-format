@@ -23,7 +23,11 @@ file(GLOB LOCALE "./locale/**/*.c")
 
 file(GLOB GEN_SOURCES "${GEN_DIR}/*.c")
 
-add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+if (BUILD_SHARED_LIBS)
+    add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+else ()
+    add_library(i18n_format ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+endif ()
 
 target_include_directories(i18n_format
         PUBLIC
