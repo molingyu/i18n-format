@@ -13,6 +13,10 @@ set_target_properties(test PROPERTIES
         C_EXTENSIONS NO
 )
 
+if (UNIX)
+    target_link_libraries(test rt)
+endif ()
+
 # Special access to i18n-format internals for testing
 target_include_directories(test PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
