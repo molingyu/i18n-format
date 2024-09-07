@@ -2,8 +2,8 @@ find_package(Python3 REQUIRED)
 
 set(SOURCE_FILES
         core.h
-        word2number.h
         core.c
+        word2number.h
         define.h
 )
 
@@ -15,6 +15,7 @@ set(API_FILES
 # https://gcc.gnu.org/wiki/Visibility
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+
 set(GEN_DIR "${CMAKE_CURRENT_SOURCE_DIR}/gen")
 
 file(GLOB LOCALE_H "./locale/**/*.h")
@@ -22,7 +23,7 @@ file(GLOB LOCALE "./locale/**/*.c")
 
 file(GLOB GEN_SOURCES "${GEN_DIR}/*.c")
 
-add_library(i18n_format ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
+add_library(i18n_format SHARED ${SOURCE_FILES} ${GEN_SOURCES} ${LOCALE_H} ${LOCALE} ${API_FILES})
 
 target_include_directories(i18n_format
         PUBLIC
@@ -46,41 +47,18 @@ set_target_properties(i18n_format PROPERTIES
         DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX}
 )
 
-if (MSVC)
-    message(STATUS "i18n_format on MSVC")
-    if (BUILD_SHARED_LIBS)
-        # this is needed by DLL users to import i18n_format symbols
-        target_compile_definitions(i18n_format INTERFACE i18n_format_DLL)
-    endif ()
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDEBUG)
+endif ()
 
-    # Enable asserts in release with debug info
-    target_compile_definitions(i18n_format PUBLIC "$<$<CONFIG:RELWITHDEBINFO>:B2_ENABLE_ASSERT>")
-
-    # Atomics are still considered experimental in Visual Studio 17.8
-    target_compile_options(i18n_format PRIVATE /experimental:c11atomics)
-
-
-elseif (MINGW)
-    if (BUILD_SHARED_LIBS)
-        set(CMAKE_SHARED_LIBRARY_PREFIX "")
-        set(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
-    endif ()
-
+if (MINGW)
     message(STATUS "i18n_format on MinGW")
 elseif (APPLE)
     message(STATUS "i18n_format on Apple")
-    target_compile_options(i18n_format PRIVATE -ffp-contract=off)
 elseif (EMSCRIPTEN)
     message(STATUS "i18n_format on Emscripten")
 elseif (UNIX)
     message(STATUS "i18n_format using Unix")
-    if ("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "aarch64")
-        # raspberry pi
-        # -mfpu=neon
-        # target_compile_options(i18n_format PRIVATE)
-    else ()
-        # x64
-    endif ()
 endif ()
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" PREFIX "src" FILES ${i18n_format_SOURCE_FILES})

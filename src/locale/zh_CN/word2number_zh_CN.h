@@ -165,11 +165,14 @@
 // Library.
 
 #pragma once
+#include <stdbool.h>
 
-long long word2number_zh_CN(const char* word);
+bool validate_word_zh_CN( const char* word );
 
-char* number2word_zh_CN(long long number);
+long long word2number_zh_CN( const char* word );
 
-double word2numberf_zh_CN(const char* word);
+char* number2word_zh_CN( long long number );
 
-char* number2wordf_zh_CN(double number);
+double word2numberf_zh_CN( const char* word );
+
+char* number2wordf_zh_CN( double number );
