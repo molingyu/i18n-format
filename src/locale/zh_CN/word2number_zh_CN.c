@@ -267,7 +267,7 @@ long long word2number_zh_CN( const char* word )
 	{
 		TRACE( "input word error!(%s)\n", word );
 		errno = EINVAL;
-		return 0;
+		return 1;
 	}
 	struct word2number_zh_CN_each_block_data data = { .data_index = 0 };
 	utf8_chr_each( word, &word2number_zh_CN_each_block, &data );
@@ -275,9 +275,22 @@ long long word2number_zh_CN( const char* word )
 	long long large_temp = 0;
 	long long temp = 0;
 	long long large_unit = 0;
-
+	bool is_negative = false;
 	for ( size_t i = 0; i < data.data_index; i++ )
 	{
+		if ( data.number[i] == -2 )
+		{
+			if ( i == 0 )
+			{
+				is_negative = true;
+			}
+			else
+			{
+				TRACE( "input word error!(%s)\n", word );
+				errno = EINVAL;
+				return 1;
+			}
+		}
 		if ( data.number[i] >= 10000 )
 		{
 			if ( temp == 0 )
@@ -326,7 +339,32 @@ long long word2number_zh_CN( const char* word )
 		}
 	}
 	result += large_temp + temp;
-	return result;
+	return is_negative ? -result : result;
+}
+
+size_t calculate_required_size( long long number )
+{
+	size_t size = 0;
+
+	if ( number < 0 )
+	{
+		size += 3; // 负号对应的"负"字占用3个字节
+		number = -number;
+	}
+
+	int section = 0;
+	while ( number > 0 )
+	{
+		int four_digits = number % 10000;
+		number /= 10000;
+
+		// 每四位数转换可能包括 4 个数字，最多 3 个单位，再加上可能的"万"或"亿"
+		size += 4 * 3 + 3 * 3;
+
+		section++;
+	}
+
+	return size;
 }
 
 char* number2word_zh_CN( long long number )
