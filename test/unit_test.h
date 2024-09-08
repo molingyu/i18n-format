@@ -170,6 +170,7 @@
 #include <sys/time.h>
 #endif
 
+#include <math.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -188,6 +189,7 @@ extern int _utest_test_closure_passed;
 extern char* _utest_current_test_unit_name;
 
 extern int _utest_test_unit_return;
+extern int _utest_test_repetition_count;
 
 #ifdef __linux__
 extern struct timeval _utest_test_start, _utest_test_end;
@@ -204,6 +206,8 @@ extern struct timespec _utest_test_start, _utest_test_end;
 			  ( _utest_test_end.tv_nsec - _utest_test_start.tv_nsec ) / 1e9 )
 #endif
 
+#define EPSILON 1e-6
+
 #define TEST_START( T, BLOCK )                                                                                                   \
 	do                                                                                                                           \
 	{                                                                                                                            \
@@ -213,11 +217,11 @@ extern struct timespec _utest_test_start, _utest_test_end;
 		BLOCK;                                                                                                                   \
 		CURRENT_TIME( _utest_test_end );                                                                                         \
 		printf( "\n" );                                                                                                          \
-		printf( "Test Suites: \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_suite_failed,         \
-				_utest_test_suite_passed, _utest_test_suite_total );                                                             \
-		printf( "Test:        \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n", _utest_test_units_failed,         \
-				_utest_test_units_passed, _utest_test_units_total );                                                             \
-		printf( "Time:        %.4f s\n", ELAPSED );                                                                              \
+		printf( "\033[1mTest Suites:\033[0m \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n",                     \
+				_utest_test_suite_failed, _utest_test_suite_passed, _utest_test_suite_total );                                   \
+		printf( "\033[1mTest:\033[0m        \033[31m%d failed\033[0m, \033[32m%d passed\033[0m, %d total\n",                     \
+				_utest_test_units_failed, _utest_test_units_passed, _utest_test_units_total );                                   \
+		printf( "\033[1mTime:\033[0m        %.4f s\n", ELAPSED );                                                                \
 		printf( "\nRan all test suites.\n" );                                                                                    \
 		if ( _utest_test_units_failed == 0 )                                                                                     \
 		{                                                                                                                        \
@@ -263,11 +267,18 @@ extern struct timespec _utest_test_start, _utest_test_end;
 #define UT_IT( DESC, BLOCK )                                                                                                     \
 	do                                                                                                                           \
 	{                                                                                                                            \
-		_utest_test_closure_total = 0;                                                                                           \
-		_utest_test_closure_failed = 0;                                                                                          \
-		_utest_test_closure_passed = 0;                                                                                          \
 		_utest_test_suite_total += 1;                                                                                            \
-		BLOCK;                                                                                                                   \
+		for ( int i = 0; i < _utest_test_repetition_count; i++ )                                                                 \
+		{                                                                                                                        \
+			_utest_test_closure_total = 0;                                                                                       \
+			_utest_test_closure_failed = 0;                                                                                      \
+			_utest_test_closure_passed = 0;                                                                                      \
+			BLOCK;                                                                                                               \
+			if ( _utest_test_closure_failed > 0 )                                                                                \
+			{                                                                                                                    \
+				break;                                                                                                           \
+			}                                                                                                                    \
+		}                                                                                                                        \
 		if ( _utest_test_closure_failed > 0 )                                                                                    \
 		{                                                                                                                        \
 			_utest_test_suite_failed += 1;                                                                                       \
@@ -288,7 +299,7 @@ extern struct timespec _utest_test_start, _utest_test_end;
 		if ( ( C ) == 0 )                                                                                                        \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
-			printf( "\033[31m  %s(%d): '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                       \
+			printf( "  \033[31m%s(%d):\n    '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                  \
 		}                                                                                                                        \
 		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
@@ -301,7 +312,7 @@ extern struct timespec _utest_test_start, _utest_test_end;
 		if ( ( C ) != 0 )                                                                                                        \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
-			printf( "\033[31m  %s(%d): '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                       \
+			printf( "  \033[31m%s(%d):\n    '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                  \
 		}                                                                                                                        \
 		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
@@ -314,8 +325,50 @@ extern struct timespec _utest_test_start, _utest_test_end;
 		if ( ( A ) != ( B ) )                                                                                                    \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
-			printf( "    \033[31mTest Fail: " #A " != " #B " (actual: %lld, %lld).\033[0m\n\n", (long long)( A ),                \
-					(long long)( B ) );                                                                                          \
+			printf( "  \033[31m%s(%d):\n    " #A " != " #B " (actual: %lld, %lld).\033[0m\n\n", __FILE__, __LINE__,              \
+					(long long)( A ), (long long)( B ) );                                                                        \
+		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define EXPECT_EQUAL_STR( A, B )                                                                                                 \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
+		if ( ( A ) != ( B ) )                                                                                                    \
+		{                                                                                                                        \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "  \033[31m%s(%d):\n    " #A " != " #B " (actual: %s, %s).\033[0m\n\n", __FILE__, __LINE__, (char*)( A ),    \
+					(char*)( B ) );                                                                                              \
+		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define EXPECT_EQUAL_INT( A, B )                                                                                                 \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
+		if ( ( A ) != ( B ) )                                                                                                    \
+		{                                                                                                                        \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "  \033[31m%s(%d):\n    " #A " != " #B " (actual: %d, %d).\033[0m\n\n", __FILE__, __LINE__, (int)( A ),      \
+					(int)( B ) );                                                                                                \
+		}                                                                                                                        \
+		_utest_test_closure_passed += 1;                                                                                         \
+	}                                                                                                                            \
+	while ( 0 )
+
+#define EXPECT_EQUAL_FLOAT( A, B )                                                                                               \
+	do                                                                                                                           \
+	{                                                                                                                            \
+		_utest_test_closure_total += 1;                                                                                          \
+		if ( fabs( A - B ) > EPSILON )                                                                                           \
+		{                                                                                                                        \
+			_utest_test_closure_failed += 1;                                                                                     \
+			printf( "  \033[31m%s(%d):\n    " #A " != " #B " (actual: %f, %f).\033[0m\n\n", __FILE__, __LINE__, (float)( A ),    \
+					(float)( B ) );                                                                                              \
 		}                                                                                                                        \
 		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \

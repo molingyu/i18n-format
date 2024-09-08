@@ -185,3 +185,4 @@ struct timeval _utest_test_start, _utest_test_end;
 struct timespec _utest_test_start, _utest_test_end;
 #endif
 int _utest_test_unit_return = 0;
+int _utest_test_repetition_count = 100;
