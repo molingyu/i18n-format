@@ -26,7 +26,8 @@ for software that uses a lot of procedural content generation (such as most rogu
 
 > As a consequence it’s impossible (well, with reasonable effort) to translate a procedural/generative game that creates
 > lots of text unless you design the game for that from the very beginning. Which is yet another huge challenge for a
-> small team. Because – among the team members of Team ADOM – we speak Spanish, German, English and Polish. And probably a
+> small team. Because – among the team members of Team ADOM – we speak Spanish, German, English and Polish. And probably
+> a
 > couple of words in a couple of other languages. But none of us are trained linguists that immediately think of all the
 > special rules of their languages – but the internal API needs to be designed for that. So there is ample room for many
 > stupid mistakes. And this ignores the fact that we might want to translate to Russian or Chinese – languages we don’t
@@ -70,4 +71,4 @@ I18n-format welcomes users of different languages to contribute relevant impleme
 
 ## License
 
-i18n-format is developed by stark233 and I18n-format contributors the MIT license.
+i18n-format is developed by stark233 and I18n-format contributors the [LGPL license](./LICENSE).
