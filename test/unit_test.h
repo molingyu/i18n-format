@@ -172,6 +172,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 extern int _utest_test_units_total;
@@ -312,7 +313,7 @@ extern struct timespec _utest_test_start, _utest_test_end;
 		if ( ( C ) != 0 )                                                                                                        \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
-			printf( "  \033[31m%s(%d):\n    '" #C "' not true.\033[0m\n", __FILE__, __LINE__ );                                  \
+			printf( "  \033[31m%s(%d):\n    '" #C "' not false.\033[0m\n", __FILE__, __LINE__ );                                 \
 		}                                                                                                                        \
 		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
@@ -336,11 +337,11 @@ extern struct timespec _utest_test_start, _utest_test_end;
 	do                                                                                                                           \
 	{                                                                                                                            \
 		_utest_test_closure_total += 1;                                                                                          \
-		if ( ( A ) != ( B ) )                                                                                                    \
+		if ( strcmp( A, B ) != 0 )                                                                                               \
 		{                                                                                                                        \
 			_utest_test_closure_failed += 1;                                                                                     \
-			printf( "  \033[31m%s(%d):\n    " #A " != " #B " (actual: %s, %s).\033[0m\n\n", __FILE__, __LINE__, (char*)( A ),    \
-					(char*)( B ) );                                                                                              \
+			printf( "  \033[31m%s(%d):\n    " #A " != " #B ". Actual: %s(size: %lu), %s(size: %lu).\033[0m\n\n", __FILE__,       \
+					__LINE__, (char*)( A ), strlen( A ), (char*)( B ), strlen( B ) );                                            \
 		}                                                                                                                        \
 		_utest_test_closure_passed += 1;                                                                                         \
 	}                                                                                                                            \
