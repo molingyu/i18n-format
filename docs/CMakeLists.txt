@@ -5,17 +5,13 @@ set(DOXYGEN_GENERATE_HTML YES)
 set(DOXYGEN_USE_MATHJAX YES)
 set(DOXYGEN_MATHJAX_VERSION MathJax_3)
 set(DOXYGEN_MATHJAX_FORMAT SVG)
-set(DOXYGEN_EXTRACT_ALL NO)
+set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_FILE_PATTERNS *.h)
 set(DOXYGEN_ENABLE_PREPROCESSING YES)
 set(DOXYGEN_MACRO_EXPANSION YES)
 set(DOXYGEN_EXPAND_ONLY_PREDEF YES)
-set(DOXYGEN_PREDEFINED B2_API= B2_INLINE=)
+set(DOXYGEN_PREDEFINED API=)
 set(DOXYGEN_WARN_IF_UNDOCUMENTED YES)
-
-# In multiline comments, this takes the first line/sentence as a brief description to use in the table of functions.
-# So I don't need to use @brief tags to separate the short description from the full description.
-set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
 
 set(DOXYGEN_IMAGE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/images")
 set(DOXYGEN_HTML_EXTRA_STYLESHEET "${CMAKE_CURRENT_SOURCE_DIR}/extra.css")
