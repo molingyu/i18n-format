@@ -184,3 +184,5 @@ size_t utf8_strlen( const char* utf8_str );
 int utf8_char_length( unsigned char c );
 
 bool utf8_chr_each( const char* utf8_str, bool ( *each_block )( size_t, const char*, void* ), void* extra_data );
+
+long long ll_pow( int base, int exp );

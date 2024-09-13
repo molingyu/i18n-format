@@ -223,3 +223,24 @@ bool utf8_chr_each( const char* utf8_str, bool ( *each_block )( size_t, const ch
 	}
 	return true;
 }
+
+long long ll_pow( int base, int exp )
+{
+	long long result = 1;
+	if ( exp < 0 )
+	{
+		return 0;
+	}
+
+	while ( exp > 0 )
+	{
+		if ( exp % 2 == 1 )
+		{
+			result *= base;
+		}
+		base *= base;
+		exp /= 2;
+	}
+
+	return result;
+}
