@@ -8,7 +8,7 @@ set(SOURCE_FILES
 )
 
 set(API_FILES
-        ../include/i18n-format/base.h
+        ../include/i18n-format/i18n-format.h
 )
 
 # Hide internal functions
